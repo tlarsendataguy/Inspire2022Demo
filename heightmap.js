@@ -32,7 +32,7 @@ const renderData = {
     }
 };
 
-function startPipeline(imgUrl, sizesUrl) {
+window.startPipeline = function(imgUrl, sizesUrl) {
     renderData.resetData();
     renderData.imgUrl = imgUrl;
     renderData.sizesUrl = sizesUrl;
@@ -163,5 +163,3 @@ function getHeightData(img, ) {
 
     return data;
 }
-
-startPipeline("heightmap.png","size.json");
