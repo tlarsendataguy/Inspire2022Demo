@@ -81,10 +81,23 @@ function startRender() {
     light.position.z = -40000;
     scene.add(light);
 
-    let camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 5000000 );
+    let div = document.getElementById("heightmap");
+    let width = div.clientWidth;
+    let height = div.clientHeight - 10;
+
+    let camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 5000000 );
     let geometry = new THREE.PlaneGeometry(renderData.sizeFt, renderData.sizeFt , renderData.width-1, renderData.height-1);
     let material = new THREE.MeshLambertMaterial({color: 0xaaddaa});
     let plane = new THREE.Mesh( geometry, material );
+
+    let onWindowResize = function() {
+        let width = div.clientWidth;
+        let height = div.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    }
+    window.addEventListener( 'resize', onWindowResize, false );
 
     //set height of vertices
     for ( let i = 0; i < renderData.pixels(); i++ ) {
@@ -98,12 +111,11 @@ function startRender() {
     scene.add(plane);
     camera.position.y = 10000;
     camera.position.z = renderData.sizeFt/2;
-    camera.rotateX(-3.14159/5);
     const renderer = new THREE.WebGLRenderer();
-    renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
+    renderer.setSize( width, height );
+    div.appendChild(renderer.domElement);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.7;
-    document.body.appendChild( renderer.domElement );
 
 
     function animate() {
@@ -124,7 +136,7 @@ function startRender() {
     controls.domElement = renderer.domElement;
     controls.rollSpeed = 1.0;
     controls.autoForward = false;
-    controls.dragToLook = false;
+    controls.dragToLook = true;
 
     animate();
 }
