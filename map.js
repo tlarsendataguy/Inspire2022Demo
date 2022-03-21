@@ -46,7 +46,7 @@ function runWorkflow() {
     let payload = {
         Lat: latLng.lat().toFixed(6),
         Lon: latLng.lng().toFixed(6),
-        Size: "10"
+        Size: "20"
     }
     req.open("POST", window.location, true);
     req.setRequestHeader("content-type", "application/json; charset=UTF-8")
