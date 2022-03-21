@@ -21,9 +21,34 @@ function initMap() {
 }
 
 function runWorkflow() {
-    //document.getElementById("loadingDialogContent").innerText = "Running workflow...";
-    //document.getElementById("loadingDialog").style.visibility = "visible";
+    document.getElementById("loadingDialogContent").innerText = "Running workflow...";
+    document.getElementById("loadingDialog").style.visibility = "visible";
 
-    document.getElementById("heightmapDialog").style.visibility = "visible";
-    startPipeline("heightmap.png", "size.json")
+    let req = new XMLHttpRequest();
+    req.onload = function() {
+        console.log("success")
+        console.log(req.responseText);
+        let response = JSON.parse(req.responseText)
+        if (response.Errors === null) {
+            document.getElementById("loadingDialogContent").innerText = "Rendering heightmap...";
+            let file1 = response.OutputFiles[0];
+            let file2 = response.OutputFiles[1];
+            if (file1.includes("size.json")) {
+                startPipeline(file2, file1);
+            } else {
+                startPipeline(file1, file2);
+            }
+        }
+    };
+    req.onerror = function() {
+        console.log(`error ${req.responseText}`);
+    };
+    let payload = {
+        Lat: latLng.lat().toFixed(6),
+        Lon: latLng.lng().toFixed(6),
+        Size: "10"
+    }
+    req.open("POST", window.location, true);
+    req.setRequestHeader("content-type", "application/json; charset=UTF-8")
+    req.send(JSON.stringify(payload));
 }

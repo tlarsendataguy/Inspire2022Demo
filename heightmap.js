@@ -48,7 +48,7 @@ window.startPipeline = function(imgUrl, sizesUrl) {
 
 function getSizes(next) {
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", renderData.sizesUrl, true);
+    xmlhttp.open("GET", window.location + renderData.sizesUrl, true);
     xmlhttp.onload = function() {
         if (xmlhttp.status !== 200) {
             renderData.setError(`error ${xmlhttp.status} retrieving size data`);
@@ -69,7 +69,7 @@ function getSizes(next) {
 function loadImage() {
     renderData.img = new Image();
     renderData.img.onload = startRender;
-    renderData.img.src = renderData.imgUrl;
+    renderData.img.src = window.location + renderData.imgUrl;
 }
 
 function startRender() {
@@ -147,6 +147,8 @@ function startRender() {
     controls.dragToLook = true;
 
     document.addEventListener('keyup', escapeKeyPressed, false);
+    document.getElementById("heightmapDialog").style.visibility = "visible";
+    document.getElementById("loadingDialog").style.visibility = "hidden";
 
     animate();
 }
