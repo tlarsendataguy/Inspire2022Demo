@@ -19,3 +19,11 @@ function initMap() {
         }
     });
 }
+
+function runWorkflow() {
+    //document.getElementById("loadingDialogContent").innerText = "Running workflow...";
+    //document.getElementById("loadingDialog").style.visibility = "visible";
+
+    document.getElementById("heightmapDialog").style.visibility = "visible";
+    startPipeline("heightmap.png", "size.json")
+}

@@ -9,10 +9,14 @@ const renderData = {
     imgUrl: '',
     sizesUrl: '',
     error: '',
-    img: undefined,
+    img: null,
+    scene: null,
+    controls: null,
+    onWindowResize: null,
     sizeFt: 0,
     width: 0,
     height: 0,
+    animationFrameId: 0,
     pixels: function() {
         return this.width * this.height;
     },
@@ -20,7 +24,10 @@ const renderData = {
         this.imgUrl = '';
         this.sizesUrl = '';
         this.error = '';
-        this.img = undefined;
+        this.img = null;
+        this.scene = null;
+        this.controls = null;
+        this.onWindowResize = null;
         this.sizeFt = 0;
         this.width = 0;
         this.height = 0;
@@ -66,11 +73,10 @@ function loadImage() {
 }
 
 function startRender() {
-    //get height data from img
-    let data = getHeightData(renderData.img);
 
     // plane
     const scene = new THREE.Scene();
+    renderData.scene = scene;
 
     let sky = new s.Sky();
     sky.scale.setScalar(450000)
@@ -90,19 +96,21 @@ function startRender() {
     let material = new THREE.MeshLambertMaterial({color: 0xaaddaa});
     let plane = new THREE.Mesh( geometry, material );
 
-    let onWindowResize = function() {
+    renderData.onWindowResize = function() {
         let width = div.clientWidth;
         let height = div.clientHeight;
         camera.aspect = width / height;
         camera.updateProjectionMatrix();
         renderer.setSize(width, height);
     }
-    window.addEventListener( 'resize', onWindowResize, false );
+    window.addEventListener( 'resize', renderData.onWindowResize, false );
 
-    //set height of vertices
+    //set vertice height
+    let data = getHeightData(renderData.img);
     for ( let i = 0; i < renderData.pixels(); i++ ) {
         plane.geometry.attributes.position.array[i * 3 + 2] = data[i]/10;
     }
+
 
     plane.rotateX(-3.14159/2);
     geometry.attributes.position.needsUpdate = true;
@@ -119,7 +127,7 @@ function startRender() {
 
 
     function animate() {
-        requestAnimationFrame( animate );
+        renderData.animationFrameId = requestAnimationFrame( animate );
         render();
     }
 
@@ -131,17 +139,19 @@ function startRender() {
     }
 
     let controls = new c.FlyControls( camera, renderer.domElement );
-
+    renderData.controls = controls;
     controls.movementSpeed = 4000;
     controls.domElement = renderer.domElement;
     controls.rollSpeed = 1.0;
     controls.autoForward = false;
     controls.dragToLook = true;
 
+    document.addEventListener('keyup', escapeKeyPressed, false);
+
     animate();
 }
 
-function getHeightData(img, ) {
+function getHeightData(img) {
     let canvas = document.createElement( 'canvas' );
     canvas.width = img.width;
     canvas.height = img.height;
@@ -154,7 +164,7 @@ function getHeightData(img, ) {
 
     let imgd = context.getImageData(0, 0, img.width, img.height);
     let pix = imgd.data;
-    const view = new DataView(pix.buffer);
+    let view = new DataView(pix.buffer);
 
     for (let i = 0; i < size; i++) {
         view.setUint8(i*4 + 3, 0);
@@ -162,4 +172,23 @@ function getHeightData(img, ) {
     }
 
     return data;
+}
+
+const ESCAPE = 27;
+
+function escapeKeyPressed(e) {
+    if (e.keyCode !== ESCAPE) {
+        return;
+    }
+    cancelAnimationFrame(renderData.animationFrameId);
+    document.getElementById("heightmapDialog").style.visibility = "hidden";
+    document.removeEventListener('keyup', escapeKeyPressed, false);
+    window.removeEventListener( 'resize', renderData.onWindowResize, false );
+
+    let heightmap = document.getElementById("heightmap");
+    while (heightmap.firstChild) {
+        heightmap.removeChild(heightmap.lastChild);
+    }
+    renderData.controls.dispose();
+    renderData.resetData()
 }
