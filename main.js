@@ -3,6 +3,55 @@ import * as c from "./threejs/controls/FlyControls.js";
 import * as s from "./threejs/objects/Sky.js";
 
 const clock = new THREE.Clock();
+const nmToFt = 6076.12;
+
+const renderData = {
+    error: '',
+    img: undefined,
+    sizeFt: 0,
+    width: 0,
+    height: 0,
+    pixels: function() {return this.width * this.height},
+};
+
+function startPipeline(imgUrl, sizesUrl) {
+    resetData();
+    getSizes(sizesUrl, generateLoadImage(imgUrl));
+}
+
+function resetData() {
+    renderData.error = '';
+    renderData.img = undefined;
+    renderData.sizeFt = 0;
+    renderData.width = 0;
+    renderData.height = 0;
+}
+
+function setError(msg) {
+    resetData();
+    renderData.error = msg;
+    console.error(msg);
+}
+
+function getSizes(sizesUrl, successCallback) {
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET", sizesUrl, false);
+    xmlhttp.onload = function() {
+        if (xmlhttp.status !== 200) {
+            setError(`error ${xmlhttp.status} retrieving size data`);
+            return;
+        }
+        let sizes = JSON.parse(xmlhttp.responseText);
+        renderData.sizeFt = sizes.size * nmToFt;
+        renderData.width = sizes.width;
+        renderData.height = sizes.height;
+        successCallback();
+    }
+    xmlhttp.onerror = function() {
+        setError("could not load size data");
+    }
+    xmlhttp.send();
+}
 
 //return array with height data from img
 function getHeightData(img, scale) {
@@ -31,29 +80,18 @@ function getHeightData(img, scale) {
     return data;
 }
 
-function loadImage(imageUrl, sizeUrl) {
-    let img = new Image();
-    img.onload = generateOnLoadImage(img, sizeUrl);
-    img.src = imageUrl;
+function generateLoadImage(imageUrl) {
+    return function() {
+        let img = new Image();
+        img.onload = generateOnLoadImage(img);
+        img.src = imageUrl;
+    }
 }
 
-function generateOnLoadImage(img, sizeUrl) {
+function generateOnLoadImage(img) {
     return function() {
-        var sizes;
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", sizeUrl, false);
-        xmlhttp.send();
-        if (xmlhttp.status === 200) {
-            sizes = JSON.parse(xmlhttp.responseText);
-        } else {
-            console.error(`error loading size.json`);
-            return;
-        }
-
         //get height data from img
         var data = getHeightData(img);
-        var feet = sizes.size * 6076.12;
-        var pixels = sizes.width * sizes.height;
 
         // plane
         const scene = new THREE.Scene();
@@ -68,12 +106,12 @@ function generateOnLoadImage(img, sizeUrl) {
         scene.add(light);
 
         const camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 5000000 );
-        var geometry = new THREE.PlaneGeometry(feet, feet , sizes.width-1, sizes.height-1);
+        var geometry = new THREE.PlaneGeometry(renderData.sizeFt, renderData.sizeFt , renderData.width-1, renderData.height-1);
         var material = new THREE.MeshLambertMaterial({color: 0xaaddaa});
         var plane = new THREE.Mesh( geometry, material );
 
         //set height of vertices
-        for ( var i = 0; i < pixels; i++ ) {
+        for ( var i = 0; i < renderData.pixels(); i++ ) {
             plane.geometry.attributes.position.array[i * 3 + 2] = data[i]/10;
         }
 
@@ -83,7 +121,7 @@ function generateOnLoadImage(img, sizeUrl) {
 
         scene.add(plane);
         camera.position.y = 10000;
-        camera.position.z = feet/2;
+        camera.position.z = renderData.sizeFt/2;
         camera.rotateX(-3.14159/5);
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize( window.innerWidth-20, window.innerHeight-20 );
@@ -116,4 +154,4 @@ function generateOnLoadImage(img, sizeUrl) {
     }
 }
 
-loadImage("heightmap.png","size.json");
+startPipeline("heightmap.png","size.json");
