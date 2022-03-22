@@ -4,6 +4,7 @@ import * as s from "./threejs/objects/Sky.js";
 
 const clock = new THREE.Clock();
 const nmToFt = 6076.12;
+const scale = 0.01;
 
 const renderData = {
     imgUrl: '',
@@ -82,7 +83,7 @@ function startRender() {
     renderData.scene = new THREE.Scene();
 
     let sky = new s.Sky();
-    sky.scale.setScalar(450000)
+    sky.scale.setScalar(450000 * scale)
     renderData.scene.add(sky);
 
     let light = new THREE.DirectionalLight(0xffffff, 1);
@@ -94,8 +95,8 @@ function startRender() {
     let width = div.clientWidth;
     let height = div.clientHeight;
 
-    let camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 5000000 );
-    let geometry = new THREE.PlaneGeometry(renderData.sizeFt, renderData.sizeFt , renderData.width-1, renderData.height-1);
+    let camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 5000000 * scale );
+    let geometry = new THREE.PlaneGeometry(renderData.sizeFt * scale, renderData.sizeFt * scale , renderData.width-1, renderData.height-1);
     let material = new THREE.MeshLambertMaterial({color: 0xaaddaa});
     let plane = new THREE.Mesh( geometry, material );
 
@@ -111,7 +112,7 @@ function startRender() {
     //set vertice height
     let data = getHeightData(renderData.img);
     for ( let i = 0; i < renderData.pixels(); i++ ) {
-        plane.geometry.attributes.position.array[i * 3 + 2] = data[i]/10;
+        plane.geometry.attributes.position.array[i * 3 + 2] = data[i] / 10 * scale;
     }
 
     plane.rotateX(-3.14159/2);
@@ -119,8 +120,8 @@ function startRender() {
     geometry.computeVertexNormals();
 
     renderData.scene.add(plane);
-    camera.position.y = 10000;
-    camera.position.z = renderData.sizeFt/2;
+    camera.position.y = 10000 * scale;
+    camera.position.z = renderData.sizeFt * scale /2;
     let renderer = new THREE.WebGLRenderer();
     renderer.setSize( width, height );
     div.appendChild(renderer.domElement);
@@ -140,7 +141,7 @@ function startRender() {
 
     let controls = new c.FlyControls( camera, renderer.domElement );
     renderData.controls = controls;
-    controls.movementSpeed = 4000;
+    controls.movementSpeed = 4000 * scale;
     controls.rollSpeed = 1.0;
     controls.autoForward = false;
     controls.dragToLook = true;
