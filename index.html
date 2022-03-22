@@ -17,9 +17,14 @@
             width: calc(100% - 10px);
             height: calc(100% - 10px);
         }
-        #heightmap, #map {
+        #heightmap {
             width: 100%;
-            height: calc(100% - 50px);
+            height: 100%;
+            margin: 0;
+        }
+        #map {
+            width: 100%;
+            height: calc(100% - 100px);
             margin: 0;
         }
         #heightmapDialog {
@@ -62,21 +67,40 @@
             width: 490px;
             height: 290px;
         }
+        #closeLoadingDialog {
+            bottom: 10px;
+            width: 200px;
+            left: 150px;
+            position: absolute;
+        }
+        #directions {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
     </style>
     <script type="module" src="heightmap.js"></script>
     <script src="map.js"></script>
 </head>
 <body>
+<div style="height: 50px">Click on the map to select a point and click the 'Render' button to view a 20x20 nautical mile heightmap.</div>
 <div id="map"></div>
 <div>
-    <button style="width: 100%; height: 50px" type="button" onclick="runWorkflow()" >Render</button>
+    <button id="renderButton" style="width: 100%; height: 50px" type="button" onclick="runWorkflow()" disabled >Render</button>
 </div>
 <div id="heightmapDialog">
     <div id="heightmap"></div>
+    <div id="directions">
+        <div>Press W, A, S, D to pan</div>
+        <div>Press Q, E to roll</div>
+        <div>Press R, F to move vertically</div>
+        <div>Click and drag mouse to change direction</div>
+    </div>
 </div>
 <div id="loadingDialog">
     <div id="loadingDialogBackground">
         <div id="loadingDialogContent"></div>
+        <button id="closeLoadingDialog" type="button" onclick="closeLoadingDialog()" style="visibility: collapse" >Close</button>
     </div>
 </div>
 <script

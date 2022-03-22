@@ -48,10 +48,12 @@ window.startPipeline = function(imgUrl, sizesUrl) {
 
 function getSizes(next) {
     let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("GET", window.location + renderData.sizesUrl, true);
+    xmlhttp.open("GET", renderData.sizesUrl, true);
     xmlhttp.onload = function() {
         if (xmlhttp.status !== 200) {
             renderData.setError(`error ${xmlhttp.status} retrieving size data`);
+            document.getElementById("loadingDialogContent").innerText = "error parsing sizes";
+            document.getElementById("closeLoadingDialog").style.visibility = "visible";
             return;
         }
         let sizes = JSON.parse(xmlhttp.responseText);
@@ -62,6 +64,8 @@ function getSizes(next) {
     }
     xmlhttp.onerror = function() {
         renderData.setError("could not load size data");
+        document.getElementById("loadingDialogContent").innerText = "error loading size data";
+        document.getElementById("closeLoadingDialog").style.visibility = "visible";
     }
     xmlhttp.send();
 }
@@ -69,27 +73,26 @@ function getSizes(next) {
 function loadImage() {
     renderData.img = new Image();
     renderData.img.onload = startRender;
-    renderData.img.src = window.location + renderData.imgUrl;
+    renderData.img.src = renderData.imgUrl;
 }
 
 function startRender() {
 
     // plane
-    const scene = new THREE.Scene();
-    renderData.scene = scene;
+    renderData.scene = new THREE.Scene();
 
     let sky = new s.Sky();
     sky.scale.setScalar(450000)
-    scene.add(sky);
+    renderData.scene.add(sky);
 
     let light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.y = 40000;
     light.position.z = -40000;
-    scene.add(light);
+    renderData.scene.add(light);
 
     let div = document.getElementById("heightmap");
     let width = div.clientWidth;
-    let height = div.clientHeight - 10;
+    let height = div.clientHeight;
 
     let camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 5000000 );
     let geometry = new THREE.PlaneGeometry(renderData.sizeFt, renderData.sizeFt , renderData.width-1, renderData.height-1);
@@ -111,20 +114,18 @@ function startRender() {
         plane.geometry.attributes.position.array[i * 3 + 2] = data[i]/10;
     }
 
-
     plane.rotateX(-3.14159/2);
     geometry.attributes.position.needsUpdate = true;
     geometry.computeVertexNormals();
 
-    scene.add(plane);
+    renderData.scene.add(plane);
     camera.position.y = 10000;
     camera.position.z = renderData.sizeFt/2;
-    const renderer = new THREE.WebGLRenderer();
+    let renderer = new THREE.WebGLRenderer();
     renderer.setSize( width, height );
     div.appendChild(renderer.domElement);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.7;
-
 
     function animate() {
         renderData.animationFrameId = requestAnimationFrame( animate );
@@ -134,14 +135,12 @@ function startRender() {
     function render() {
         const delta = clock.getDelta();
         controls.update( delta );
-        renderer.render( scene, camera );
-
+        renderer.render( renderData.scene, camera );
     }
 
     let controls = new c.FlyControls( camera, renderer.domElement );
     renderData.controls = controls;
     controls.movementSpeed = 4000;
-    controls.domElement = renderer.domElement;
     controls.rollSpeed = 1.0;
     controls.autoForward = false;
     controls.dragToLook = true;
