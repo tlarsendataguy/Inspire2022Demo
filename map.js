@@ -4,6 +4,18 @@ let latLng;
 
 const ayxurl = "https://ayxrunner.tlarsendataguy.com/public/heightmap";
 
+function getBounds(from) {
+    let twentyMiles = 20 * 1852;
+    let l = google.maps.geometry.spherical.computeOffset(from, twentyMiles/2, 270).lng(),
+        t = google.maps.geometry.spherical.computeOffset(from, twentyMiles/2, 0).lat(),
+        r = google.maps.geometry.spherical.computeOffset(from, twentyMiles/2, 90).lng(),
+        b = google.maps.geometry.spherical.computeOffset(from, twentyMiles/2, 180).lat();
+    return new google.maps.LatLngBounds(
+        new google.maps.LatLng(b,l),
+        new google.maps.LatLng(t,r),
+    );
+}
+
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: { lat: 39.843925, lng: -98.432874 },
@@ -13,12 +25,20 @@ function initMap() {
         document.getElementById("renderButton").removeAttribute("disabled");
         latLng = e.latLng;
         if (marker === undefined) {
-            marker = new google.maps.Marker({
-                position: latLng,
-                map: map,
+            marker = new google.maps.Rectangle({
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#FF0000",
+                fillOpacity: 0.35,
+                clickable: false,
+                map,
+                bounds: getBounds(latLng),
             });
         } else {
-            marker.setPosition(latLng);
+            marker.setOptions({
+                bounds: getBounds(latLng),
+            });
         }
     });
 }

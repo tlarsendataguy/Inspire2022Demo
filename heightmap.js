@@ -95,7 +95,7 @@ function startRender() {
     let width = div.clientWidth;
     let height = div.clientHeight;
 
-    let camera = new THREE.PerspectiveCamera( 50, width / height, 0.1, 5000000 * scale );
+    let camera = new THREE.PerspectiveCamera( 30, width / height, 0.1, 5000000 * scale );
     let geometry = new THREE.PlaneGeometry(renderData.sizeFt * scale, renderData.sizeFt * scale , renderData.width-1, renderData.height-1);
     let material = new THREE.MeshLambertMaterial({color: 0xaaddaa});
     let plane = new THREE.Mesh( geometry, material );
