@@ -1,6 +1,6 @@
 # Inspire 2022 Demo
 
-This repository contains the web app code (HTML and Javascript), as well as the workflows, used in the height map demo.
+This repository contains the web app code (HTML and Javascript), as well as the workflows, used in the [height map demo](https://ayxrunner.tlarsendataguy.com/public/heightmap).
 
 The height map demo presented at Alteryx Inspire 2022 highlighted how the code-friendly side of Alteryx can supercharge Analytics Engineering and enhance Alteryx's partnership with Snowflake. In the demo, a web application runs an Alteryx workflow that generates heightmap data. The data is returned to the web application in an image file, which the web app uses to generate an interactive 3D scene.
 
