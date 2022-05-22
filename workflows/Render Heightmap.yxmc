@@ -1,0 +1,523 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2021.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
+        <Position x="0" y="0" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.ControlParam.ControlParam">
+        <Position x="114" y="114" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>width</Name>
+          <DefaultAnnotationText>width</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.ControlParam.ControlParam">
+        <Position x="450" y="114" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>height</Name>
+          <DefaultAnnotationText>height</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="NewImage">
+        <Position x="270" y="306" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Width>3</Width>
+          <Height>3</Height>
+          <Color>#ffffffff</Color>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="image" type="Blob" source="New Image" size="20" scale="0">
+            </Field>
+            <Field name="width" type="Int32" source="New Image" size="4" scale="0">
+            </Field>
+            <Field name="height" type="Int32" source="New Image" size="4" scale="0">
+            </Field>
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="render_image.dll" EngineDllEntryPoint="NewImageEntry" />
+    </Node>
+    <Node ToolID="5">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+        <Position x="114" y="198" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Update Value</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+        <Position x="450" y="198" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Update Value</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroInput.MacroInput">
+        <Position x="174" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UseFileInput value="False" />
+          <Name>Elevation Grid</Name>
+          <Abbrev />
+          <ShowFieldMap value="False" />
+          <Optional value="False" />
+          <TextInput>
+            <Configuration>
+              <NumRows value="9" />
+              <Fields>
+                <Field name="column" />
+                <Field name="row" />
+                <Field name="elevation" />
+              </Fields>
+              <Data>
+                <r>
+                  <c>0</c>
+                  <c>0</c>
+                  <c>10293</c>
+                </r>
+                <r>
+                  <c>0</c>
+                  <c>1</c>
+                  <c>10290</c>
+                </r>
+                <r>
+                  <c>0</c>
+                  <c>2</c>
+                  <c>10280</c>
+                </r>
+                <r>
+                  <c>1</c>
+                  <c>0</c>
+                  <c>9482</c>
+                </r>
+                <r>
+                  <c>1</c>
+                  <c>1</c>
+                  <c>4982</c>
+                </r>
+                <r>
+                  <c>1</c>
+                  <c>2</c>
+                  <c>4938</c>
+                </r>
+                <r>
+                  <c>2</c>
+                  <c>0</c>
+                  <c>14824</c>
+                </r>
+                <r>
+                  <c>2</c>
+                  <c>1</c>
+                  <c>13847</c>
+                </r>
+                <r>
+                  <c>2</c>
+                  <c>2</c>
+                  <c>11937</c>
+                </r>
+              </Data>
+            </Configuration>
+          </TextInput>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Input</DefaultAnnotationText>
+          <Left value="True" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="column" source="TextInput:" type="Byte" />
+            <Field name="row" source="TextInput:" type="Byte" />
+            <Field name="elevation" source="TextInput:" type="Int16" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroInput" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="270" y="402" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="BinaryAnd(ShiftRight([elevation], 0), 255)" field="r" size="1" type="Byte" />
+            <FormulaField expression="BinaryAnd(ShiftRight([elevation], 8), 255)" field="g" size="1" type="Byte" />
+            <FormulaField expression="BinaryAnd(ShiftRight([elevation], 16), 255)" field="b" size="1" type="Byte" />
+            <FormulaField expression="255" field="a" size="1" type="Byte" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>rgba</AnnotationText>
+          <DefaultAnnotationText>r = BinaryAnd(ShiftRight([elevation], 0), 255)
+g = BinaryAnd(ShiftRight([elevati...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="column" source="TextInput:" type="Byte" />
+            <Field name="row" source="TextInput:" type="Byte" />
+            <Field name="elevation" source="TextInput:" type="Int16" />
+            <Field name="r" source="Formula: BinaryAnd(ShiftRight([elevation], 0), 255)" type="Byte" />
+            <Field name="g" source="Formula: BinaryAnd(ShiftRight([elevation], 8), 255)" type="Byte" />
+            <Field name="b" source="Formula: BinaryAnd(ShiftRight([elevation], 16), 255)" type="Byte" />
+            <Field name="a" source="Formula: 255" type="Byte" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="9">
+      <GuiSettings Plugin="DrawPixels">
+        <Position x="366" y="306" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ImageField>image</ImageField>
+          <Left>0</Left>
+          <Top>0</Top>
+          <Width>3</Width>
+          <Height>3</Height>
+          <RedField>r</RedField>
+          <GreenField>g</GreenField>
+          <BlueField>b</BlueField>
+          <AlphaField>a</AlphaField>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="image" type="Blob" source="Draw RGBA" size="20" scale="0">
+            </Field>
+            <Field name="width" type="Int32" source="Draw RGBA" size="4" scale="0">
+            </Field>
+            <Field name="height" type="Int32" source="Draw RGBA" size="4" scale="0">
+            </Field>
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="render_image.dll" EngineDllEntryPoint="DrawPixelsEntry" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+        <Position x="258" y="198" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Update Value</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="11">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Action.Action">
+        <Position x="594" y="198" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Update Value</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
+        <Position x="462" y="306" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Name>Output</Name>
+          <Abbrev />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Output</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection name="#1">
+      <Origin ToolID="2" Connection="Question" />
+      <Destination ToolID="5" Connection="Question" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="2" Connection="Question" />
+      <Destination ToolID="10" Connection="Question" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="3" Connection="Question" />
+      <Destination ToolID="6" Connection="Question" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="3" Connection="Question" />
+      <Destination ToolID="11" Connection="Question" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="9" Connection="Image" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="8" Connection="Output" />
+      <Destination ToolID="9" Connection="Pixels" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="10" Connection="Action" />
+      <Destination ToolID="9" Connection="Action" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="11" Connection="Action" />
+      <Destination ToolID="9" Connection="Action" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="5" Connection="Action" />
+      <Destination ToolID="4" Connection="Action" />
+    </Connection>
+    <Connection name="#3">
+      <Origin ToolID="6" Connection="Action" />
+      <Destination ToolID="4" Connection="Action" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="9" Connection="Output" />
+      <Destination ToolID="14" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <Constants>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>ControlParam.width</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>ControlParam.height</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Macro Input (7)</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Macro Output (14)</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+    </Constants>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Render Heightmap</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="97ed78e3-4329-4004-aa6b-675bdd4df41c" />
+      <Telemetry>
+        <PreviousWorkflowId value="" />
+        <OriginWorkflowId value="97ed78e3-4329-4004-aa6b-675bdd4df41c" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="False" />
+    </Events>
+    <RuntimeProperties>
+      <Actions>
+        <NoCondition>
+          <Type>NoCondition</Type>
+          <Description>(Always Run)</Description>
+          <True>
+            <Action>
+              <Type>UpdateValue</Type>
+              <Description />
+              <ToolId value="5" />
+              <Mode>Simple</Mode>
+              <Variable />
+              <Replace value="False" />
+              <Destination>4/Width</Destination>
+            </Action>
+            <Action>
+              <Type>UpdateValue</Type>
+              <Description />
+              <ToolId value="6" />
+              <Mode>Simple</Mode>
+              <Variable />
+              <Replace value="False" />
+              <Destination>4/Height</Destination>
+            </Action>
+            <Action>
+              <Type>UpdateValue</Type>
+              <Description />
+              <ToolId value="10" />
+              <Mode>Simple</Mode>
+              <Variable />
+              <Replace value="False" />
+              <Destination>9/Width</Destination>
+            </Action>
+            <Action>
+              <Type>UpdateValue</Type>
+              <Description />
+              <ToolId value="11" />
+              <Mode>Simple</Mode>
+              <Variable />
+              <Replace value="False" />
+              <Destination>9/Height</Destination>
+            </Action>
+          </True>
+        </NoCondition>
+      </Actions>
+      <Questions>
+        <Question>
+          <Type>Tab</Type>
+          <Description>Questions</Description>
+          <Name>Tab (1)</Name>
+          <ToolId value="1" />
+          <Questions>
+            <Question>
+              <Type>ControlParam</Type>
+              <Description>width</Description>
+              <Name>width</Name>
+              <ToolId value="2" />
+            </Question>
+            <Question>
+              <Type>ControlParam</Type>
+              <Description>height</Description>
+              <Name>height</Name>
+              <ToolId value="3" />
+            </Question>
+            <Question>
+              <Type>MacroInput</Type>
+              <Description>Macro Input (7)</Description>
+              <Name>Macro Input (7)</Name>
+              <ToolId value="7" />
+            </Question>
+            <Question>
+              <Type>MacroOutput</Type>
+              <Description>Macro Output (14)</Description>
+              <Name>Macro Output (14)</Name>
+              <ToolId value="14" />
+            </Question>
+          </Questions>
+        </Question>
+      </Questions>
+      <ModuleType>Macro</ModuleType>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="False" />
+      <MacroImageStd value="39" />
+      <MacroInputs />
+      <MacroOutputs />
+      <BatchMacro>
+        <OutputMode>AllSame</OutputMode>
+        <ControlParams>
+          <ControlParam>
+            <Name>width</Name>
+            <Description>width</Description>
+          </ControlParam>
+          <ControlParam>
+            <Name>height</Name>
+            <Description>height</Description>
+          </ControlParam>
+        </ControlParams>
+      </BatchMacro>
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
+      <Wiz_OpenOutputTools>
+        <Tool ToolId="4" Selected="True" />
+        <Tool ToolId="7" Selected="True" />
+        <Tool ToolId="9" Selected="True" />
+        <Tool ToolId="14" Selected="True" />
+      </Wiz_OpenOutputTools>
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
+    </RuntimeProperties>
+  </Properties>
+</AlteryxDocument>

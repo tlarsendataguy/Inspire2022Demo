@@ -1,0 +1,1331 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2021.3">
+  <Nodes>
+    <Node ToolID="1">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.TextInput.TextInput">
+        <Position x="54" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <NumRows value="1" />
+          <Fields>
+            <Field name="lat" />
+            <Field name="lon" />
+            <Field name="size" />
+          </Fields>
+          <Data>
+            <r>
+              <c>%Question.Lat%</c>
+              <c>%Question.Lon%</c>
+              <c>%Question.Size%</c>
+            </r>
+          </Data>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="True" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lat" source="TextInput:" type="Double" />
+            <Field name="lon" source="TextInput:" type="Double" />
+            <Field name="size" source="TextInput:" type="Byte" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTextInput" />
+    </Node>
+    <Node ToolID="2">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
+        <Position x="0" y="0" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="3">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MultiFieldFormula.MultiFieldFormula">
+        <Position x="342" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FieldType>Numeric</FieldType>
+          <Fields orderChanged="False">
+            <Field name="lat" />
+            <Field name="lon" />
+            <Field name="lat (degrees)" selected="False" />
+            <Field name="*Unknown" selected="False" />
+          </Fields>
+          <CopyOutput value="False" />
+          <Expression>Round([_CurrentField_]*36000, 10)</Expression>
+          <ChangeFieldType value="True" />
+          <OutputFieldType type="Int64" size="8" scale="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>to 0.1 seconds</AnnotationText>
+          <DefaultAnnotationText>Round([_CurrentField_]*36000, 10)</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lat" source="Formula: Round([_CurrentField_]*36000, 10)" type="Int64" />
+            <Field name="lon" source="Formula: Round([_CurrentField_]*36000, 10)" type="Int64" />
+            <Field name="size" source="TextInput:" type="Byte" />
+            <Field name="lat (degrees)" source="Formula: [lat]" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMultiFieldFormula" />
+    </Node>
+    <Node ToolID="4">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="438" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="600" field="0.1 Seconds To Minutes" size="8" type="Int64" />
+            <FormulaField expression="[lat] + ([size] / 2 * [0.1 Seconds To Minutes])" field="top" size="8" type="Int64" />
+            <FormulaField expression="[lat] - ([size] / 2 * [0.1 Seconds To Minutes])" field="bottom" size="8" type="Int64" />
+            <FormulaField expression="max(round(COS([lat (degrees)] * 0.01745329), 0.25), 0.25) * 100" field="lon factor" size="8" type="Int64" />
+            <FormulaField expression="[lon factor] / 25" field="lon width" size="8" type="Int64" />
+            <FormulaField expression="IF     [lon width] = 4&#xA;THEN   [0.1 Seconds To Minutes]&#xA;ELSEIF [lon width] = 3&#xA;THEN   [0.1 Seconds To Minutes] + ([0.1 Seconds To Minutes] / 3)&#xA;ELSEIF [lon width] = 2&#xA;THEN   [0.1 Seconds To Minutes] * 2&#xA;ELSE   [0.1 Seconds To Minutes] * 4&#xA;ENDIF" field="0.1 Seconds to Minutes Lon" size="8" type="Int64" />
+            <FormulaField expression="[lon] - ([size] / 2 * [0.1 Seconds to Minutes Lon])" field="left" size="8" type="Int64" />
+            <FormulaField expression="[lon] + ([size] / 2 * [0.1 Seconds to Minutes Lon])" field="right" size="8" type="Int64" />
+            <FormulaField expression="(right - left) / 10" field="width" size="8" type="Int64" />
+            <FormulaField expression="(top - bottom) / 10" field="height" size="8" type="Int64" />
+            <FormulaField expression="[width] * [height]" field="expected records" size="8" type="Int64" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>bounding box</AnnotationText>
+          <DefaultAnnotationText>0.1 Seconds To Minutes = 600
+top = [lat] + ([size] / 2 * [0.1 Seconds To Minutes...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lat" source="Formula: Round([_CurrentField_]*36000, 10)" type="Int64" />
+            <Field name="lon" source="Formula: Round([_CurrentField_]*36000, 10)" type="Int64" />
+            <Field name="size" source="TextInput:" type="Byte" />
+            <Field name="lat (degrees)" source="Formula: [lat]" type="Double" />
+            <Field name="0.1 Seconds To Minutes" source="Formula: 600" type="Int64" />
+            <Field name="top" source="Formula: [lat] + ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="bottom" source="Formula: [lat] - ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="lon factor" source="Formula: max(round(COS([lat (degrees)] * 0.01745329), 0.25), 0.25) * 100" type="Int64" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="0.1 Seconds to Minutes Lon" source="Formula: IF     [lon width] = 4&#xA;THEN   [0.1 Seconds To Minutes]&#xA;ELSEIF [lon width] = 3&#xA;THEN   [0.1 Seconds To Minutes] + ([0.1 Seconds To Minutes] / 3)&#xA;ELSEIF [lon width] = 2&#xA;THEN   [0.1 Seconds To Minutes] * 2&#xA;ELSE   [0.1 Seconds To Minutes] * 4&#xA;ENDIF" type="Int64" />
+            <Field name="left" source="Formula: [lon] - ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="right" source="Formula: [lon] + ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="width" source="Formula: (right - left) / 10" type="Int64" />
+            <Field name="height" source="Formula: (top - bottom) / 10" type="Int64" />
+            <Field name="expected records" source="Formula: [width] * [height]" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="6">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="246" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[lat]" field="lat (degrees)" size="8" type="Double" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>lat (degrees)</AnnotationText>
+          <DefaultAnnotationText><![CDATA[lat (degrees) = [lat]
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lat" source="TextInput:" type="Double" />
+            <Field name="lon" source="TextInput:" type="Double" />
+            <Field name="size" source="TextInput:" type="Byte" />
+            <Field name="lat (degrees)" source="Formula: [lat]" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DynamicInput.DynamicInput">
+        <Position x="534" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <InputConfiguration>
+            <Configuration>
+              <Passwords />
+              <CachedCosmeticName />
+              <File RecordLimit="" FileFormat="23">aka:NASR Snowflake|||select "Lat","Lon","Elevation" from NASR."PUBLIC"."elevation" where "Lon" Between '_left_' and '_right_' and "Lat" Between '_bottom_' and '_top_'</File>
+              <FormatSpecificOptions>
+                <PreSQL />
+                <PreSQLOnConfig>True</PreSQLOnConfig>
+                <NoProgress>True</NoProgress>
+                <CacheData>False</CacheData>
+                <TableStyle>Quoted</TableStyle>
+                <ReadUncommitted>False</ReadUncommitted>
+                <PostSQL />
+              </FormatSpecificOptions>
+            </Configuration>
+          </InputConfiguration>
+          <Mode>ModifySQL</Mode>
+          <Modifications>
+            <Modify Action="ReplaceString" Annotation="'_left_'">
+              <Field>left</Field>
+              <ReplaceText>'_left_'</ReplaceText>
+            </Modify>
+            <Modify Action="ReplaceString" Annotation="'_right_'">
+              <Field>right</Field>
+              <ReplaceText>'_right_'</ReplaceText>
+            </Modify>
+            <Modify Action="ReplaceString" Annotation="'_bottom_'">
+              <Field>bottom</Field>
+              <ReplaceText>'_bottom_'</ReplaceText>
+            </Modify>
+            <Modify Action="ReplaceString" Annotation="'_top_'">
+              <Field>top</Field>
+              <ReplaceText>'_top_'</ReplaceText>
+            </Modify>
+            <Modify Action="PassField" Annotation="lon width">
+              <Field>lon width</Field>
+            </Modify>
+          </Modifications>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lat" scale="0" size="40" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="FixedDecimal" />
+            <Field name="Lon" scale="0" size="40" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="FixedDecimal" />
+            <Field name="Elevation" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDynamicInput" />
+    </Node>
+    <Node ToolID="8">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="630" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Lon" action="Count" rename="Count" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Count" source="Summarize: Count - Lon" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="10">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AppendFields.AppendFields">
+        <Position x="726" y="438" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <CartesianMode>Error</CartesianMode>
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Target_Count" selected="True" input="Target_" />
+                <SelectField field="Source_expected records" selected="True" input="Source_" />
+                <SelectField field="*Unknown" selected="False" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Count" source="Summarize: Count - Lon" type="Int64" />
+            <Field name="expected records" source="Formula: [width] * [height]" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxAppendFields" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
+        <Position x="1782" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Name>Output</Name>
+          <Abbrev />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Output</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Message.Message">
+        <Position x="822" y="438" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <When>Filter</When>
+          <Filter>[Count] != [expected records]</Filter>
+          <Type>Warning</Type>
+          <Priority>High</Priority>
+          <Transient>False</Transient>
+          <MessageExpression>ToString([expected records]-[Count],0) + " elevation records are missing and have been filled in with zeroes"</MessageExpression>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Count" source="Summarize: Count - Lon" type="Int64" />
+            <Field name="expected records" source="Formula: [width] * [height]" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMessage" />
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.GenerateRows.GenerateRows">
+        <Position x="630" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UpdateField value="False" />
+          <UpdateField_Name />
+          <CreateField_Name>Lat</CreateField_Name>
+          <CreateField_Type>Int64</CreateField_Type>
+          <CreateField_Size>8</CreateField_Size>
+          <Expression_Init>[Bottom]+5</Expression_Init>
+          <Expression_Cond>[Lat] &lt; [Top]</Expression_Cond>
+          <Expression_Loop>[Lat] + 10</Expression_Loop>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="top" source="Formula: [lat] + ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="bottom" source="Formula: [lat] - ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="Lat" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxGenerateRows" />
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="534" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="top" selected="True" />
+            <SelectField field="bottom" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="top" source="Formula: [lat] + ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="bottom" source="Formula: [lat] - ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.GenerateRows.GenerateRows">
+        <Position x="630" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <UpdateField value="False" />
+          <UpdateField_Name />
+          <CreateField_Name>Lon</CreateField_Name>
+          <CreateField_Type>Int64</CreateField_Type>
+          <CreateField_Size>8</CreateField_Size>
+          <Expression_Init>[Left] + 5</Expression_Init>
+          <Expression_Cond>[Lon] &lt; [Right]</Expression_Cond>
+          <Expression_Loop>[Lon] + 10</Expression_Loop>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="left" source="Formula: [lon] - ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="right" source="Formula: [lon] + ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="Lon" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxGenerateRows" />
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="534" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="lon width" selected="True" />
+            <SelectField field="left" selected="True" />
+            <SelectField field="right" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="left" source="Formula: [lon] - ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="right" source="Formula: [lon] + ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.RecordID.RecordID">
+        <Position x="726" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FieldName>Row</FieldName>
+          <StartValue>0</StartValue>
+          <FieldType>Int32</FieldType>
+          <FieldSize>6</FieldSize>
+          <Position>0</Position>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="top" source="Formula: [lat] + ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="bottom" source="Formula: [lat] - ([size] / 2 * [0.1 Seconds To Minutes])" type="Int64" />
+            <Field name="Lat" type="Int64" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Row" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxRecordID" />
+    </Node>
+    <Node ToolID="28">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.RecordID.RecordID">
+        <Position x="726" y="102" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FieldName>Column</FieldName>
+          <StartValue>0</StartValue>
+          <FieldType>Int32</FieldType>
+          <FieldSize>6</FieldSize>
+          <Position>0</Position>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="left" source="Formula: [lon] - ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="right" source="Formula: [lon] + ([size] / 2 * [0.1 Seconds to Minutes Lon])" type="Int64" />
+            <Field name="Lon" type="Int64" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Column" order="Asc" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxRecordID" />
+    </Node>
+    <Node ToolID="29">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AppendFields.AppendFields">
+        <Position x="822" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <CartesianMode>Allow</CartesianMode>
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Target_Column" selected="True" input="Target_" />
+                <SelectField field="Target_lon width" selected="True" input="Target_" />
+                <SelectField field="Target_Lon" selected="True" input="Target_" />
+                <SelectField field="Source_Row" selected="True" input="Source_" />
+                <SelectField field="Source_Lat" selected="True" input="Source_" />
+                <SelectField field="*Unknown" selected="False" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Lat" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxAppendFields" />
+    </Node>
+    <Node ToolID="30">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Join.Join">
+        <Position x="1014" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration joinByRecordPos="False">
+          <JoinInfo connection="Left">
+            <Field field="Lon" />
+            <Field field="Lat" />
+          </JoinInfo>
+          <JoinInfo connection="Right">
+            <Field field="Lon" />
+            <Field field="Lat" />
+          </JoinInfo>
+          <SelectConfiguration>
+            <Configuration outputConnection="Join">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="Right_lon width" selected="False" rename="Right_lon width" input="Right_" />
+                <SelectField field="Right_Lon" selected="False" rename="Right_Lon" input="Right_" />
+                <SelectField field="Right_Lat" selected="False" rename="Right_Lat" input="Right_" />
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Left">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="Lon" />
+            <Field field="Lat" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Join">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="Double" />
+          </RecordInfo>
+          <SortInfo>
+            <Field field="Lon" order="" />
+            <Field field="Lat" order="" />
+          </SortInfo>
+        </MetaInfo>
+        <MetaInfo connection="Right">
+          <RecordInfo>
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lat" scale="0" size="40" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="FixedDecimal" />
+            <Field name="Lon" scale="0" size="40" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="FixedDecimal" />
+            <Field name="Elevation" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="Double" />
+          </RecordInfo>
+          <SortInfo noProgress="True">
+            <Field field="Lon" />
+            <Field field="Lat" />
+          </SortInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxJoin" />
+    </Node>
+    <Node ToolID="31">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Union.Union">
+        <Position x="1110" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ByName_ErrorMode>Ignore</ByName_ErrorMode>
+          <ByName_OutputMode>All</ByName_OutputMode>
+          <Mode>ByName</Mode>
+          <SetOutputOrder value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="File: aka:NASR Snowflake|||select &quot;Lat&quot;,&quot;Lon&quot;,&quot;Elevation&quot; from NASR.&quot;PUBLIC&quot;.&quot;elevation&quot; where &quot;Lon&quot; Between -2922370 and -2914370 and &quot;Lat&quot; Between 1360210 and 1366210" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxUnion" />
+    </Node>
+    <Node ToolID="32">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="918" y="186" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="True" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="Column" selected="True" />
+            <SelectField field="Row" selected="True" />
+            <SelectField field="lon width" selected="True" />
+            <SelectField field="Lon" selected="True" />
+            <SelectField field="Lat" selected="True" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="33">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="1206" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="IF   IsNull([Elevation])&#xA;THEN 0&#xA;ELSE [Elevation]&#xA;ENDIF" field="Elevation" size="8" type="Double" />
+            <FormulaField expression="[Elevation] * 3.28084" field="Elevation" size="8" type="Double" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>Null to 0
+Convert to ft</AnnotationText>
+          <DefaultAnnotationText>Elevation = IF   IsNull([Elevation])
+THEN 0
+ELSE [Elevation]
+ENDIF
+Elevation = [...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="Formula: [Elevation] * 3.28084" type="Double" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="34">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Test.Test">
+        <Position x="1110" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Tests>
+            <Test>
+              <Name>All Snowflake records join to the generated lon and lats</Name>
+              <Connection>#1</Connection>
+              <Type>RecCountValue</Type>
+              <Value>0</Value>
+            </Test>
+          </Tests>
+          <DontReportSubsequent value="True" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>Zero</AnnotationText>
+          <DefaultAnnotationText>All Snowflake records join to the generated lon and lats</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxTest" />
+    </Node>
+    <Node ToolID="35">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="102" y="54" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Size</Name>
+          <DefaultAnnotationText>Size</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="36">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="222" y="54" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Lat</Name>
+          <DefaultAnnotationText>Lat</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="37">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="330" y="54" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Lon</Name>
+          <DefaultAnnotationText>Lon</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="38">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="150" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="lat" selected="True" type="Double" forced="True" size="8" />
+            <SelectField field="lon" selected="True" type="Double" forced="True" size="8" />
+            <SelectField field="*Unknown" selected="True" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="lat" source="TextInput:" type="Double" />
+            <Field name="lon" source="TextInput:" type="Double" />
+            <Field name="size" source="TextInput:" type="Byte" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="40">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="534" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="size" selected="True" />
+            <SelectField field="width" selected="True" />
+            <SelectField field="height" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="size" source="TextInput:" type="Byte" />
+            <Field name="width" source="Formula: (right - left) / 10" type="Int64" />
+            <Field name="height" source="Formula: (top - bottom) / 10" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="41">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MacroOutput.MacroOutput">
+        <Position x="630" y="522" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Name>Box</Name>
+          <Abbrev>b</Abbrev>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>b Output</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMacroOutput" />
+    </Node>
+    <Node ToolID="42">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.MultiFieldFormula.MultiFieldFormula">
+        <Position x="1302" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FieldType>Numeric</FieldType>
+          <Fields orderChanged="False">
+            <Field name="Elevation" />
+            <Field name="Column" selected="False" />
+            <Field name="Row" selected="False" />
+            <Field name="lon width" selected="False" />
+            <Field name="Lon" selected="False" />
+            <Field name="Lat" selected="False" />
+            <Field name="*Unknown" selected="False" />
+          </Fields>
+          <CopyOutput value="False" />
+          <Expression>Round([_CurrentField_]*10, 1)</Expression>
+          <ChangeFieldType value="True" />
+          <OutputFieldType type="Int32" size="4" scale="1" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>to tenths of foot</AnnotationText>
+          <DefaultAnnotationText>Round([_CurrentField_]*10, 1)</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxMultiFieldFormula" />
+    </Node>
+    <Node ToolID="43">
+      <GuiSettings Plugin="AlteryxSpatialPluginsGui.Summarize.Summarize">
+        <Position x="1398" y="354" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SummarizeFields>
+            <SummarizeField field="Elevation" action="Min" rename="Min_Elevation" />
+          </SummarizeFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Min_Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxSpatialPluginsEngine.dll" EngineDllEntryPoint="AlteryxSummarize" />
+    </Node>
+    <Node ToolID="44">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AppendFields.AppendFields">
+        <Position x="1494" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <CartesianMode>Error</CartesianMode>
+          <SelectConfiguration>
+            <Configuration outputConnection="Output">
+              <OrderChanged value="False" />
+              <CommaDecimal value="False" />
+              <SelectFields>
+                <SelectField field="*Unknown" selected="True" />
+              </SelectFields>
+            </Configuration>
+          </SelectConfiguration>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+            <Field name="Min_Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxAppendFields" />
+    </Node>
+    <Node ToolID="45">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="1590" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="[Elevation] - [Min_Elevation]" field="Elevation" size="4" type="Int32" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>Min is 0</AnnotationText>
+          <DefaultAnnotationText><![CDATA[Elevation = [Elevation] - [Min_Elevation]
+]]></DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="Formula: [Elevation] - [Min_Elevation]" type="Int32" />
+            <Field name="Min_Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="46">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="1686" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="Column" selected="True" />
+            <SelectField field="Row" selected="True" />
+            <SelectField field="Elevation" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Elevation" source="Formula: [Elevation] - [Min_Elevation]" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="47">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Sort.Sort">
+        <Position x="1398" y="270" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <SortInfo locale="1033">
+            <Field field="Row" order="Descending" />
+            <Field field="Column" order="Ascending" />
+          </SortInfo>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>Row - Descending
+Column - Ascending</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="lon width" source="Formula: [lon factor] / 25" type="Int64" />
+            <Field name="Lon" type="Int64" />
+            <Field name="Lat" type="Int64" />
+            <Field name="Elevation" source="Formula: Round([_CurrentField_]*10, 1)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSort" />
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="1" Connection="Output" />
+      <Destination ToolID="38" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="3" Connection="Output" />
+      <Destination ToolID="4" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="10" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="8" Connection="Output" />
+      <Destination ToolID="10" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="7" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="24" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="26" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="4" Connection="Output" />
+      <Destination ToolID="40" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="6" Connection="Output" />
+      <Destination ToolID="3" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="8" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="7" Connection="Output" />
+      <Destination ToolID="30" Connection="Right" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="32" Connection="Output" />
+      <Destination ToolID="30" Connection="Left" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="10" Connection="Output" />
+      <Destination ToolID="22" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="23" Connection="Output" />
+      <Destination ToolID="27" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="24" Connection="Output" />
+      <Destination ToolID="23" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="25" Connection="Output" />
+      <Destination ToolID="28" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="26" Connection="Output" />
+      <Destination ToolID="25" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="27" Connection="Output" />
+      <Destination ToolID="29" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="28" Connection="Output" />
+      <Destination ToolID="29" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="29" Connection="Output" />
+      <Destination ToolID="32" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="30" Connection="Join" />
+      <Destination ToolID="31" Connection="Input" />
+    </Connection>
+    <Connection name="#2">
+      <Origin ToolID="30" Connection="Left" />
+      <Destination ToolID="31" Connection="Input" />
+    </Connection>
+    <Connection name="#1">
+      <Origin ToolID="30" Connection="Right" />
+      <Destination ToolID="34" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="31" Connection="Output" />
+      <Destination ToolID="33" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="33" Connection="Output" />
+      <Destination ToolID="42" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="38" Connection="Output" />
+      <Destination ToolID="6" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="40" Connection="Output" />
+      <Destination ToolID="41" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="42" Connection="Output" />
+      <Destination ToolID="43" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="42" Connection="Output" />
+      <Destination ToolID="47" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="43" Connection="Output" />
+      <Destination ToolID="44" Connection="Source" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="47" Connection="Output" />
+      <Destination ToolID="44" Connection="Targets" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="44" Connection="Output" />
+      <Destination ToolID="45" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="45" Connection="Output" />
+      <Destination ToolID="46" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="46" Connection="Output" />
+      <Destination ToolID="18" Connection="Input" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="False" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <Constants>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Size</Name>
+        <Value>10</Value>
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Lat</Name>
+        <Value>37.866957</Value>
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Lon</Name>
+        <Value>-81.065895</Value>
+        <IsNumeric value="False" />
+      </Constant>
+    </Constants>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>Download Elevation Grid</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="80351fa7-31d2-4961-9192-f78c1f3afe64" />
+      <Telemetry>
+        <PreviousWorkflowId value="6a847002-2f4d-494c-87eb-56ac31a6e3b9" />
+        <OriginWorkflowId value="6a847002-2f4d-494c-87eb-56ac31a6e3b9" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+    <RuntimeProperties>
+      <Actions />
+      <Questions>
+        <Question>
+          <Type>Tab</Type>
+          <Description>Questions</Description>
+          <Name>Tab (2)</Name>
+          <ToolId value="2" />
+          <Questions>
+            <Question>
+              <Type>MacroInput</Type>
+              <Description />
+              <Name>Macro Input (1)</Name>
+              <ToolId value="1" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Size (nm)</Description>
+              <Name>Size</Name>
+              <ToolId value="35" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Lat</Description>
+              <Name>Lat</Name>
+              <ToolId value="36" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Lon</Description>
+              <Name>Lon</Name>
+              <ToolId value="37" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>MacroOutput</Type>
+              <Description>Macro Output (41)</Description>
+              <Name>Macro Output (41)</Name>
+              <ToolId value="41" />
+            </Question>
+            <Question>
+              <Type>MacroOutput</Type>
+              <Description>Macro Output (18)</Description>
+              <Name>Macro Output (18)</Name>
+              <ToolId value="18" />
+            </Question>
+          </Questions>
+        </Question>
+      </Questions>
+      <ModuleType>Macro</ModuleType>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="True" />
+      <MacroImageStd value="39" />
+      <MacroInputs />
+      <MacroOutputs />
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
+      <Wiz_OpenOutputTools>
+        <Tool ToolId="18" Selected="True" />
+        <Tool ToolId="41" Selected="True" />
+      </Wiz_OpenOutputTools>
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
+    </RuntimeProperties>
+  </Properties>
+</AlteryxDocument>

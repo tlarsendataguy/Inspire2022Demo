@@ -1,0 +1,423 @@
+<?xml version="1.0"?>
+<AlteryxDocument yxmdVer="2021.3">
+  <Nodes>
+    <Node ToolID="6">
+      <GuiSettings Plugin="ExportImage">
+        <Position x="330" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <ImageField>image</ImageField>
+          <SaveAs>%Question.OutputFolder%\heightmap.png</SaveAs>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="image path" type="V_String" source="Export Image" size="2147483647" scale="0">
+            </Field>
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="render_image.dll" EngineDllEntryPoint="ExportImageEntry" />
+    </Node>
+    <Node ToolID="7">
+      <GuiSettings Plugin="PreviewImage">
+        <Position x="426" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+      <EngineSettings EngineDll="render_image.dll" EngineDllEntryPoint="PreviewImageEntry" />
+    </Node>
+    <Node ToolID="22">
+      <GuiSettings>
+        <Position x="138" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="Size">%Question.Size%</Value>
+          <Value name="Lat">%Question.Lat%</Value>
+          <Value name="Lon">%Question.Lon%</Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Download Elevation Grid (1)</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+        <MetaInfo connection="Box">
+          <RecordInfo>
+            <Field name="size" source="TextInput:" type="Bool" />
+            <Field name="width" source="Formula: (right - left) / 10" type="Int64" />
+            <Field name="height" source="Formula: (top - bottom) / 10" type="Int64" />
+          </RecordInfo>
+        </MetaInfo>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="Column" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Row" source="RecordID: Starting Value=0" type="Int32" />
+            <Field name="Elevation" source="Formula: [Elevation] - [Min_Elevation]" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings Macro=".\Download Elevation Grid.yxmc" />
+    </Node>
+    <Node ToolID="12">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.DbFileOutput.DbFileOutput">
+        <Position x="426" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <File MaxRecords="" FileFormat="0">%Question.OutputFolder%\size.json</File>
+          <Passwords />
+          <FormatSpecificOptions>
+            <LineEndStyle>LF</LineEndStyle>
+            <Delimeter>\0</Delimeter>
+            <ForceQuotes>Never</ForceQuotes>
+            <HeaderRow>False</HeaderRow>
+            <CodePage>65001</CodePage>
+            <WriteBOM>False</WriteBOM>
+          </FormatSpecificOptions>
+          <MultiFile value="False" />
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText>size.json</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <Dependencies>
+          <Implicit />
+        </Dependencies>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxDbFileOutput" />
+    </Node>
+    <Node ToolID="13">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.Formula.Formula">
+        <Position x="234" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <FormulaFields>
+            <FormulaField expression="'{&quot;size&quot;:' + ToString([size]) +&#xA;',&quot;width&quot;:' + ToString([width], 0) +&#xA;',&quot;height&quot;:' + ToString([height]) +&#xA;&quot;}&quot;" field="json" size="2147483647" type="V_String" />
+          </FormulaFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <AnnotationText>json</AnnotationText>
+          <DefaultAnnotationText>json = '{"size":' + ToString([size]) +
+',"width":' + ToString([width], 0) +
+',"h...</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="size" source="TextInput:" type="Bool" />
+            <Field name="width" source="Formula: (right - left) / 10" type="Int64" />
+            <Field name="height" source="Formula: (top - bottom) / 10" type="Int64" />
+            <Field name="json" size="2147483647" source="Formula: '{&quot;size&quot;:' + ToString([size]) +&#xA;',&quot;width&quot;:' + ToString([width], 0) +&#xA;',&quot;height&quot;:' + ToString([height]) +&#xA;&quot;}&quot;" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxFormula" />
+    </Node>
+    <Node ToolID="14">
+      <GuiSettings Plugin="AlteryxBasePluginsGui.AlteryxSelect.AlteryxSelect">
+        <Position x="330" y="198" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <OrderChanged value="False" />
+          <CommaDecimal value="False" />
+          <SelectFields>
+            <SelectField field="json" selected="True" />
+            <SelectField field="*Unknown" selected="False" />
+          </SelectFields>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="json" size="2147483647" source="Formula: '{&quot;size&quot;:' + ToString([size]) +&#xA;',&quot;width&quot;:' + ToString([width], 0) +&#xA;',&quot;height&quot;:' + ToString([height]) +&#xA;&quot;}&quot;" type="V_String" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings EngineDll="AlteryxBasePluginsEngine.dll" EngineDllEntryPoint="AlteryxSelect" />
+    </Node>
+    <Node ToolID="18">
+      <GuiSettings>
+        <Position x="234" y="282" />
+      </GuiSettings>
+      <Properties>
+        <Configuration>
+          <Value name="BatchMacroGroupBy" />
+          <Value name="ControlParams"><![CDATA[width=width
+height=height
+]]></Value>
+        </Configuration>
+        <Annotation DisplayMode="0">
+          <Name>Render Heightmap (2)</Name>
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+        <MetaInfo connection="Output">
+          <RecordInfo>
+            <Field name="image" size="2147483647" source="Draw RGBA (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro)" type="Blob" />
+            <Field name="width" source="Draw RGBA (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro)" type="Int32" />
+            <Field name="height" source="Draw RGBA (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro) (BatchMacro)" type="Int32" />
+          </RecordInfo>
+        </MetaInfo>
+      </Properties>
+      <EngineSettings Macro=".\Render Heightmap.yxmc" />
+    </Node>
+    <Node ToolID="23">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.Tab.Tab">
+        <Position x="0" y="0" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Annotation DisplayMode="0">
+          <Name />
+          <DefaultAnnotationText />
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="24">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="102" y="66" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Lat</Name>
+          <DefaultAnnotationText>Lat</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="25">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="198" y="66" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Lon</Name>
+          <DefaultAnnotationText>Lon</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="26">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="294" y="66" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>Size</Name>
+          <DefaultAnnotationText>Size</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+    <Node ToolID="27">
+      <GuiSettings Plugin="AlteryxGuiToolkit.Questions.TextBox.QuestionTextBox">
+        <Position x="402" y="66" width="59" height="59" />
+      </GuiSettings>
+      <Properties>
+        <Configuration />
+        <Annotation DisplayMode="0">
+          <Name>OutputFolder</Name>
+          <DefaultAnnotationText>OutputFolder</DefaultAnnotationText>
+          <Left value="False" />
+        </Annotation>
+      </Properties>
+    </Node>
+  </Nodes>
+  <Connections>
+    <Connection>
+      <Origin ToolID="6" Connection="Output" />
+      <Destination ToolID="7" Connection="Image" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Box" />
+      <Destination ToolID="18" Connection="Control" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Output" />
+      <Destination ToolID="18" Connection="Elevation Grid" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="22" Connection="Box" />
+      <Destination ToolID="13" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="13" Connection="Output" />
+      <Destination ToolID="14" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="14" Connection="Output" />
+      <Destination ToolID="12" Connection="Input" />
+    </Connection>
+    <Connection>
+      <Origin ToolID="18" Connection="Output" />
+      <Destination ToolID="6" Connection="Image" />
+    </Connection>
+  </Connections>
+  <Properties>
+    <Memory default="True" />
+    <GlobalRecordLimit value="0" />
+    <TempFiles default="True" />
+    <Annotation on="True" includeToolName="False" />
+    <ConvErrorLimit value="10" />
+    <ConvErrorLimit_Stop value="False" />
+    <CancelOnError value="False" />
+    <DisableBrowse value="False" />
+    <EnablePerformanceProfiling value="False" />
+    <PredictiveToolsCodePage value="1252" />
+    <DisableAllOutput value="False" />
+    <ShowAllMacroMessages value="True" />
+    <ShowConnectionStatusIsOn value="True" />
+    <ShowConnectionStatusOnlyWhenRunning value="True" />
+    <ZoomLevel value="0" />
+    <LayoutType>Horizontal</LayoutType>
+    <Constants>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Lat</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Lon</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>Size</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+      <Constant>
+        <Namespace>Question</Namespace>
+        <Name>OutputFolder</Name>
+        <Value />
+        <IsNumeric value="False" />
+      </Constant>
+    </Constants>
+    <MetaInfo>
+      <NameIsFileName value="True" />
+      <Name>HeightMap</Name>
+      <Description />
+      <RootToolName />
+      <ToolVersion />
+      <ToolInDb value="False" />
+      <CategoryName />
+      <SearchTags />
+      <Author />
+      <Company />
+      <Copyright />
+      <DescriptionLink actual="" displayed="" />
+      <Example>
+        <Description />
+        <File />
+      </Example>
+      <WorkflowId value="050154f3-54ba-4753-a70e-7308f287c215" />
+      <Telemetry>
+        <PreviousWorkflowId value="ad72a964-7560-4329-9327-bf1c3e58a06c" />
+        <OriginWorkflowId value="04957423-af0a-4699-82ae-d17157e07526" />
+      </Telemetry>
+    </MetaInfo>
+    <Events>
+      <Enabled value="True" />
+    </Events>
+    <RuntimeProperties>
+      <Actions />
+      <Questions>
+        <Question>
+          <Type>Tab</Type>
+          <Description>Questions</Description>
+          <Name>Tab (23)</Name>
+          <ToolId value="23" />
+          <Questions>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Lat</Description>
+              <Name>Lat</Name>
+              <ToolId value="24" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Lon</Description>
+              <Name>Lon</Name>
+              <ToolId value="25" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>Size</Description>
+              <Name>Size</Name>
+              <ToolId value="26" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+            <Question>
+              <Type>TextBox</Type>
+              <Description>OutputFolder</Description>
+              <Name>OutputFolder</Name>
+              <ToolId value="27" />
+              <Default />
+              <Password value="False" />
+              <Multiline value="False" />
+              <Hidden value="False" />
+            </Question>
+          </Questions>
+        </Question>
+      </Questions>
+      <ModuleType>Wizard</ModuleType>
+      <MacroCustomHelp value="False" />
+      <MacroDynamicOutputFields value="False" />
+      <MacroImageStd value="0" />
+      <MacroInputs />
+      <MacroOutputs />
+      <Wiz_CustomHelp value="False" />
+      <Wiz_CustomGraphic value="False" />
+      <Wiz_ShowOutput value="True" />
+      <Wiz_OpenOutputTools>
+        <Tool ToolId="6" Selected="True" />
+        <Tool ToolId="7" Selected="True" />
+        <Tool ToolId="22" Selected="True" />
+        <Tool ToolId="12" Selected="True" />
+        <Tool ToolId="18" Selected="True" />
+      </Wiz_OpenOutputTools>
+      <Wiz_OutputMessage />
+      <Wiz_NoOutputFilesMessage />
+      <Wiz_ChainRunWizard />
+    </RuntimeProperties>
+  </Properties>
+</AlteryxDocument>
